@@ -8,6 +8,10 @@
 #define true 1
 #endif
 
+#ifndef false
+#define false 0
+#endif
+
 #ifndef HASH_SIZE
 #define HASH_SIZE 317
 #endif
@@ -16,7 +20,7 @@
 #define HASH_H
 
 typedef enum var_type {
-	int_type, float_type, string_type
+	int_type, float_type, string_type, error_type
 } var_type;
 
 typedef struct id_type_pair {
@@ -39,7 +43,9 @@ extern list *HASH_TABLE[HASH_SIZE];
 int hash_function(char *identifier);
 
 list *add_to_list(id_type_pair *element, list *l);
-void add_to_hash(char *identifier, var_type type);
+void add_to_hash(id_type_pair *pair);
+
+void adds_to_hash(char *id, var_type t);
 
 var_type get_type(char *identifier);
 bool declared(char *identifier);

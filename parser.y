@@ -30,7 +30,11 @@ PROGRAM program = {NULL,NULL};
 	char *string;
 	char *id_name;
 	var_type type;
-	struct hash_element *declaration;
+	struct id_type_pair *declaration;
+	struct DECLARATIONS *declarations;
+	struct STATEMENT *statement;
+	struct STATEMENTS *statements;
+	struct EXPR *expression;
 }
 
 %token <integer> INTEGER
@@ -57,6 +61,16 @@ PROGRAM program = {NULL,NULL};
 
 %type <declaration> DECLARATION
 %type <type> TYPE
+%type <statement> WHILE
+%type <statement> IF
+%type <statement> PRINT
+%type <statement> READ
+%type <statement> ASSIGNMENT
+%type <statement> STATEMENT
+%type <expression> EXPR
+%type <statements> STATEMENTS
+%type <declarations> DECLARATIONS
+
 
 %left PLUS MINUS
 %left MULT DIV
@@ -66,12 +80,14 @@ PROGRAM program = {NULL,NULL};
 
 %%
 
-START : DECLARATIONS STATEMENTS;
+START : DECLARATIONS STATEMENTS {
+	program.declarations = $1;
+	program.statements = $2;
+};
 
-DECLARATIONS : %empty 
-	| DECLARATION DECLARATIONS{
-		program.declarations = addToDECLARATIONS(program.declarations, $1);
-	};
+DECLARATIONS : %empty 			{$$ = NULL;}
+	| DECLARATIONS DECLARATION  {$$ = addToDECLARATIONS($1,$2);}
+	;
 
 DECLARATION : tVAR tID ':' TYPE ';'{$$ = makeDECLARATION($2,$4);};
 
@@ -80,25 +96,32 @@ TYPE : tFLOAT {$$ = float_type;}
 	 | tSTRING {$$ = string_type;}
 	 ;
 
-STATEMENTS : %empty | STATEMENT STATEMENTS;
+STATEMENTS : %empty  		{$$ = NULL;}
+	| STATEMENTS STATEMENT{$$ = addToSTATEMENTS($1, $2);}
+	;
 
-STATEMENT : WHILE | IF | PRINT | READ | ASSIGNMENT;
-WHILE : tWHILE EXPR tDO STATEMENTS tDONE;
-IF : tIF EXPR tTHEN STATEMENTS tENDIF | tIF EXPR tTHEN STATEMENTS tELSE STATEMENTS tENDIF;
-PRINT : tPRINT EXPR ';';
-READ : tREAD tID ';';
-ASSIGNMENT : tID '=' EXPR ';';
+STATEMENT : WHILE | IF | PRINT | READ | ASSIGNMENT; 	// $$ will be equal to the STATEMENT  from the individual parts
 
-EXPR : INTEGER 
-	 | FLOAT
-	 | tID
-	 | STRING
-	 | EXPR PLUS EXPR
-	 | EXPR MINUS EXPR
-	 | EXPR MULT EXPR
-	 | EXPR DIV EXPR
-	 | '(' EXPR ')'
-	 | MINUS EXPR 	%prec UMINUS
+WHILE : tWHILE EXPR tDO STATEMENTS tDONE 	{$$ = makeSTATEMENTwhile($2,$4);};
+
+IF  : tIF EXPR tTHEN STATEMENTS tENDIF 	 	{$$ = makeSTATEMENTif($2,$4,NULL);}
+	| tIF EXPR tTHEN STATEMENTS tELSE STATEMENTS tENDIF {$$ = makeSTATEMENTif($2,$4,$6);}
+	;
+
+PRINT : tPRINT EXPR ';'		{$$ = makeSTATEMENTprint($2);};
+READ : tREAD tID ';'		{$$ = makeSTATEMENTread($2);};
+ASSIGNMENT : tID '=' EXPR ';' {$$ = makeSTATEMENTassignment($1,$3);};
+
+EXPR : INTEGER 	 			{$$ = makeEXPRint($1);}
+	 | FLOAT 				{$$ = makeEXPRfloat($1);}
+	 | tID 					{$$ = makeEXPRvariable($1);}
+	 | STRING 				{$$ = makeEXPRstring($1);}
+	 | EXPR PLUS EXPR 		{$$ = makeEXPRplus($1,$3);}
+	 | EXPR MINUS EXPR 		{$$ = makeEXPRminus($1,$3);}
+	 | EXPR MULT EXPR 		{$$ = makeEXPRtimes($1,$3);}
+	 | EXPR DIV EXPR 		{$$ = makeEXPRdiv($1,$3);}
+	 | '(' EXPR ')' 		{$$ = $2;}
+	 | MINUS EXPR 	%prec UMINUS 		{$$ = makeEXPRuminus($2);}
 	 ;
 %%
 

@@ -11,11 +11,11 @@
 typedef enum exp_type {
 	variable_type, int_literal, float_literal, string_literal, uminus_type,
 	times_type, plus_type, div_type, minus_type
-};
+} exp_type;
 
 
 typedef struct EXPR {
-	expr_type expression_type;
+	exp_type expression_type;
 	var_type type;
 
 	union {
@@ -44,16 +44,17 @@ typedef struct STATEMENT {
 	enum {WHILE_STMT,IF_STMT,PRINT_STMT,READ_STMT,ASSIGNMENT_STMT} statement_type;
 	union {
 		struct {struct EXPR *condition; struct STATEMENTS *statements;} WHILE;
-		struct {struct EXPR *condition; struct STATEMENTS *statements;} IF;
+		struct {struct EXPR *condition; struct STATEMENTS *statements; struct STATEMENTS *else_stmts;} IF; 
+		// else_part is NULL if there is no else part
 		struct {struct EXPR *to_print;} PRINT;
-		char *var_to_read;															// variable name for read
-		struct {char *var_name; type var_type; struct EXPR *assign;} ASSIGNMENT;
+		id_type_pair to_read;													// variable info for read
+		struct {id_type_pair var_info; struct EXPR *assign;} ASSIGNMENT;
 	} val;	
 
 } STATEMENT;
 
 typedef struct STATEMENTS {
-	STATEMENT *stmt;
+	STATEMENT *statement;
 	struct STATEMENTS *next;
 	struct STATEMENTS *prev;
 } STATEMENTS;
@@ -63,7 +64,6 @@ typedef struct PROGRAM {
 	STATEMENTS *statements;
 } PROGRAM;
 
-var_type get_type_from_op(var_type1, var_type2, exp_type op);
 
 EXPR *makeEXPRvariable(char *var_name);
 EXPR *makeEXPRint(int value);
@@ -78,6 +78,14 @@ EXPR *makeEXPRminus(EXPR *left, EXPR *right);
 id_type_pair *makeDECLARATION(char *identifier, var_type type);
 DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, id_type_pair *elem);
 
+STATEMENT *makeSTATEMENTwhile(EXPR *condition, STATEMENTS *statements);
+STATEMENT *makeSTATEMENTif(EXPR *condition, STATEMENTS *statements, STATEMENTS *else_stmts);
+STATEMENT *makeSTATEMENTprint(EXPR *to_print);
+STATEMENT *makeSTATEMENTread(char *id_to_read);
+STATEMENT *makeSTATEMENTassignment(char *id, EXPR *value);
+
+STATEMENTS *addToSTATEMENTS(STATEMENTS *statements, STATEMENT *statement);
+// might remove if I decide to pass this as an argument
 extern PROGRAM program;
 
 #endif

@@ -1,7 +1,7 @@
 all : minc
 
-minc : parser.tab.o lex.yy.o main.o tree.h tree.o declarations.o hash.h hash.o
-	gcc lex.yy.o parser.tab.o tree.o declarations.o hash.o expressions.o -o minc
+minc : parser.tab.o lex.yy.o tree.h tree.o declarations.o hash.h hash.o code_generation.h pretty_printer.o expressions.o statements.o main.o
+	gcc parser.tab.o lex.yy.o tree.o declarations.o hash.o code_generation.h pretty_printer.o expressions.o statements.o main.o -o minc
 
 parser.tab.c parser.tab.h : parser.y
 	bison -d parser.y 

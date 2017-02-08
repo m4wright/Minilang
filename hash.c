@@ -1,4 +1,5 @@
 #include "hash.h"
+#include <string.h>
 
 list *HASH_TABLE[HASH_SIZE];
 
@@ -27,25 +28,32 @@ void add_to_hash(id_type_pair *pair){
 	int key = hash_function(pair->identifier);
 	HASH_TABLE[key] = add_to_list(pair, HASH_TABLE[key]);
 }
+void adds_to_hash(char *id, var_type t){
+	int key = hash_function(id);
+	id_type_pair *pair = malloc(sizeof(id_type_pair));
+	pair->identifier = id;
+	pair->type = t;
+	HASH_TABLE[key] = add_to_list(pair, HASH_TABLE[key]);
+}
 
 var_type get_type(char *identifier){
 	int key = hash_function(identifier);
 	list *elems_in_bucket = HASH_TABLE[key];
-	if (elems_in_bucket == NULL) return NULL; 			// not in the hash table
+	if (elems_in_bucket == NULL) return error_type; 			// not in the hash table
 	list_elem *elem = elems_in_bucket->head;
 	while (elem){
-		if (elem->value->identifier == identifier){
+		if (strcmp(elem->value->identifier, identifier) == 0){
 			return elem->value->type;
 		}
 		elem = elem->next;
 	}
-	return NULL; 	
+	return error_type; 	
 }
 
 
 bool declared(char *identifier){
-	return get_type(identifier) != NULL;
+	return get_type(identifier) != error_type;
 }
 
 
-`
+

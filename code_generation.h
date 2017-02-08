@@ -5,6 +5,8 @@
 #ifndef CODE_GEN_H
 #define CODE_GEN_H
 
-// put functions for pretty printing 
+extern FILE *output_pretty;
+void pretty_print(PROGRAM program);
+char *type_to_string(var_type type); 
 
 #endif

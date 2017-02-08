@@ -82,9 +82,13 @@ union YYSTYPE
 	char *string;
 	char *id_name;
 	var_type type;
-	struct hash_element *declaration;
+	struct id_type_pair *declaration;
+	struct DECLARATIONS *declarations;
+	struct STATEMENT *statement;
+	struct STATEMENTS *statements;
+	struct EXPR *expression;
 
-#line 88 "parser.tab.h" /* yacc.c:1909  */
+#line 92 "parser.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
