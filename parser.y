@@ -86,7 +86,7 @@ START : DECLARATIONS STATEMENTS {
 };
 
 DECLARATIONS : %empty 			{$$ = NULL;}
-	| DECLARATIONS DECLARATION  {$$ = addToDECLARATIONS($1,$2);}
+	| DECLARATION DECLARATIONS  {$$ = addToDECLARATIONS($2,$1);}
 	;
 
 DECLARATION : tVAR tID ':' TYPE ';'{$$ = makeDECLARATION($2,$4);};
@@ -97,7 +97,7 @@ TYPE : tFLOAT {$$ = float_type;}
 	 ;
 
 STATEMENTS : %empty  		{$$ = NULL;}
-	| STATEMENTS STATEMENT{$$ = addToSTATEMENTS($1, $2);}
+	| STATEMENT STATEMENTS{$$ = addToSTATEMENTS($2, $1);}
 	;
 
 STATEMENT : WHILE | IF | PRINT | READ | ASSIGNMENT; 	// $$ will be equal to the STATEMENT  from the individual parts

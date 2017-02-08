@@ -54,16 +54,9 @@ STATEMENT *makeSTATEMENTassignment(char *id, EXPR *value){
 }
 
 STATEMENTS *addToSTATEMENTS(STATEMENTS *statements, STATEMENT *statement){
-	if (statements == NULL){
-		statements = malloc(sizeof(STATEMENTS));
-		statements->next = NULL;
-	}else{
-		statements->prev = malloc(sizeof(STATEMENTS));
-		statements->prev->next = statements;
-		statements = statements->prev;
-	}
-	statements->statement = statement;
-	statements->prev = NULL;
-	return statements;
+	STATEMENTS *to_add = malloc(sizeof(STATEMENTS));
+	to_add->next = statements;
+	to_add->statement = statement;
+	return to_add;
 }
 
