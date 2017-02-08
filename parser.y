@@ -75,9 +75,9 @@ DECLARATIONS : %empty
 
 DECLARATION : tVAR tID ':' TYPE ';'{$$ = makeDECLARATION($2,$4);};
 
-TYPE : tFLOAT {$$ = floatType;} 
-	 | tINT  {$$ = intType;}	
-	 | tSTRING {$$ = stringType;}
+TYPE : tFLOAT {$$ = float_type;} 
+	 | tINT  {$$ = int_type;}	
+	 | tSTRING {$$ = string_type;}
 	 ;
 
 STATEMENTS : %empty | STATEMENT STATEMENTS;

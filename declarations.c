@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 
-hash_element *makeDECLARATION(char *identifier, var_type type){
-	hash_element *element = malloc(sizeof(hash_element));
-	element->identifier = identifier;
-	element->type = type;
-	return element;
+id_type_pair *makeDECLARATION(char *identifier, var_type type){
+	id_type_pair *decl = malloc(sizeof(id_type_pair));
+	decl->identifier = identifier;
+	decl->type = type;
+	return decl;
 }
 
-DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, hash_element *elem){
+DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, id_type_pair *pair){
 	if (decls == NULL){
 		decls = malloc(sizeof(DECLARATIONS));
 		decls->next = NULL;
@@ -19,13 +19,13 @@ DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, hash_element *elem){
 		decls->prev->next = decls;
 		decls = decls->prev;
 	}
-	decls->decl = elem;
+	decls->decl = pair;
 	decls->prev = NULL;
-	if (in_hash_table(elem->identifier)){
+	if (declared(pair->identifier)){
 		printf("ERROR: %s already declared\n", elem->identifier);
 		exit(EXIT_FAILURE);
 	}else{
-		add_to_hash(elem);
+		add_to_hash(pair);
 	}
 	return decls;
 }

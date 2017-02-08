@@ -1,17 +1,25 @@
+/*
+	NOTE: while building up the tree, types are not checked
+	Type checking occurs after
+*/
+
 #include <stdlib.h>
 #include "hash.h"
 #ifndef AST_H
 #define AST_H
 
+typedef enum exp_type {
+	variable_type, int_literal, float_literal, string_literal, uminus_type,
+	times_type, plus_type, div_type, minus_type
+};
+
 
 typedef struct EXPR {
-	enum {
-		variableT, string_varT, intT=intType, floatT=floatType, stringT=stringType, uminus_intT, uminus_floatT,
-		times_intT, times_floatT, times_stringT, plus_intT, plus_floatT,
-		plus_stringT, div_intT, div_floatT, minus_intT, minus_floatT
-	} type;
+	expr_type expression_type;
+	var_type type;
+
 	union {
-		hash_element variable;
+		char *id;
 		int int_num;
 		float float_num;
 		char *string;
@@ -25,7 +33,7 @@ typedef struct EXPR {
 
 
 typedef struct DECLARATIONS {
-	hash_element *decl;
+	id_type_pair *decl;
 	struct DECLARATIONS *next;
 	struct DECLARATIONS *prev;
 } DECLARATIONS;
@@ -33,13 +41,13 @@ typedef struct DECLARATIONS {
 struct STATEMENTS;
 
 typedef struct STATEMENT {
-	enum {WHILE_STMT,IF_STMT,PRINT_STMT,READ_STMT,ASSIGNMENT_STMT} type;
+	enum {WHILE_STMT,IF_STMT,PRINT_STMT,READ_STMT,ASSIGNMENT_STMT} statement_type;
 	union {
 		struct {struct EXPR *condition; struct STATEMENTS *statements;} WHILE;
 		struct {struct EXPR *condition; struct STATEMENTS *statements;} IF;
 		struct {struct EXPR *to_print;} PRINT;
-		char *var_name;															// variable name for read
-		struct {char *var_name; struct EXPR *assign;} ASSIGNMENT;
+		char *var_to_read;															// variable name for read
+		struct {char *var_name; type var_type; struct EXPR *assign;} ASSIGNMENT;
 	} val;	
 
 } STATEMENT;
@@ -55,6 +63,8 @@ typedef struct PROGRAM {
 	STATEMENTS *statements;
 } PROGRAM;
 
+var_type get_type_from_op(var_type1, var_type2, exp_type op);
+
 EXPR *makeEXPRvariable(char *var_name);
 EXPR *makeEXPRint(int value);
 EXPR *makeEXPRfloat(float value);
@@ -65,8 +75,8 @@ EXPR *makeEXPRdiv(EXPR *left, EXPR *right);
 EXPR *makeEXPRplus(EXPR *left, EXPR *right);
 EXPR *makeEXPRminus(EXPR *left, EXPR *right);
 
-hash_element *makeDECLARATION(char *identifier, var_type type);
-DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, hash_element *elem);
+id_type_pair *makeDECLARATION(char *identifier, var_type type);
+DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, id_type_pair *elem);
 
 extern PROGRAM program;
 
