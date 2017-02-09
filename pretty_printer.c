@@ -15,7 +15,7 @@ void print_num_tabs(int num_tabs){
 		s[i] = '\t';
 	}
 	s[num_tabs] = '\0';
-	fprintf(output_pretty, "%s", s);
+	fprintf(pretty_file, "%s", s);
 	free(s);
 }
 
@@ -24,7 +24,7 @@ char *type_to_string(var_type type);
 void pretty_print_statements(STATEMENTS *statements, int num_tabs);
 
 void pretty_print_declaration(id_type_pair *declaration){
-	fprintf(output_pretty, "var %s: %s;\n", declaration->identifier, type_to_string(declaration->type));
+	fprintf(pretty_file, "var %s: %s;\n", declaration->identifier, type_to_string(declaration->type));
 }
 
 
@@ -38,100 +38,100 @@ void pretty_print_declarations(DECLARATIONS *declarations){
 void pretty_print_expression(EXPR *e){
 	switch (e->expression_type){
 		case variable_type:
-			fprintf(output_pretty, "%s", e->val.id);
+			fprintf(pretty_file, "%s", e->val.id);
 			break;
 		case int_literal:
-			fprintf(output_pretty, "%d", e->val.int_num);
+			fprintf(pretty_file, "%d", e->val.int_num);
 			break;
 		case float_literal:
-			fprintf(output_pretty, "%f", e->val.float_num);
+			fprintf(pretty_file, "%f", e->val.float_num);
 			break;
 		case string_literal:
-			fprintf(output_pretty, "\"%s\"", e->val.string);
+			fprintf(pretty_file, "\"%s\"", e->val.string);
 			break;
 		case uminus_type:
-			fprintf(output_pretty, "(-");
+			fprintf(pretty_file, "(-");
 			pretty_print_expression(e->val.uminus.child);
-			fprintf(output_pretty, ")");
+			fprintf(pretty_file, ")");
 			break;
 		case times_type:
-			fprintf(output_pretty, "(");
+			fprintf(pretty_file, "(");
 			pretty_print_expression(e->val.times.left);
-			fprintf(output_pretty, " * ");
+			fprintf(pretty_file, " * ");
 			pretty_print_expression(e->val.times.right);
-			fprintf(output_pretty, ")");
+			fprintf(pretty_file, ")");
 			break;
 		case plus_type:
-			fprintf(output_pretty, "(");
+			fprintf(pretty_file, "(");
 			pretty_print_expression(e->val.plus.left);
-			fprintf(output_pretty, " + ");
+			fprintf(pretty_file, " + ");
 			pretty_print_expression(e->val.plus.right);
-			fprintf(output_pretty, ")");
+			fprintf(pretty_file, ")");
 			break;
 		case div_type:
-			fprintf(output_pretty, "(");
+			fprintf(pretty_file, "(");
 			pretty_print_expression(e->val.div.left);
-			fprintf(output_pretty, " / ");
+			fprintf(pretty_file, " / ");
 			pretty_print_expression(e->val.div.right);
-			fprintf(output_pretty, ")");
+			fprintf(pretty_file, ")");
 			break;
 		case minus_type:
-			fprintf(output_pretty, "(");
+			fprintf(pretty_file, "(");
 			pretty_print_expression(e->val.minus.left);
-			fprintf(output_pretty, " - ");
+			fprintf(pretty_file, " - ");
 			pretty_print_expression(e->val.minus.right);
-			fprintf(output_pretty, ")");
+			fprintf(pretty_file, ")");
 			break;
 	}
 }
 
 void pretty_print_while(STATEMENT *statement, int num_tabs){
 	print_num_tabs(num_tabs);
-	fprintf(output_pretty, "while ");
+	fprintf(pretty_file, "while ");
 	pretty_print_expression(statement->val.WHILE.condition);
-	fprintf(output_pretty, " do\n");
+	fprintf(pretty_file, " do\n");
 	pretty_print_statements(statement->val.WHILE.statements, num_tabs+1);
 	print_num_tabs(num_tabs);
-	fprintf(output_pretty, "done\n");
+	fprintf(pretty_file, "done\n");
 }
 
 
 void pretty_print_else(STATEMENTS *statements, int num_tabs){
 	if (statements != NULL){						// NULL means that there is no else part
 		print_num_tabs(num_tabs);
-		fprintf(output_pretty, "else\n");
+		fprintf(pretty_file, "else\n");
 		pretty_print_statements(statements, num_tabs+1);
 	}
 }
 
 void pretty_print_if(STATEMENT *statement, int num_tabs){
 	print_num_tabs(num_tabs);
-	fprintf(output_pretty, "if ");
+	fprintf(pretty_file, "if ");
 	pretty_print_expression(statement->val.IF.condition);
-	fprintf(output_pretty, " then\n");
+	fprintf(pretty_file, " then\n");
 	pretty_print_statements(statement->val.IF.statements, num_tabs+1);
 	pretty_print_else(statement->val.IF.else_stmts, num_tabs);
 	print_num_tabs(num_tabs);
-	fprintf(output_pretty, "endif\n");
+	fprintf(pretty_file, "endif\n");
 }
 
 void pretty_print_print_stmt(STATEMENT *statement, int num_tabs){
 	print_num_tabs(num_tabs);
-	fprintf(output_pretty, "print ");
+	fprintf(pretty_file, "print ");
 	pretty_print_expression(statement->val.PRINT.to_print);
-	fprintf(output_pretty, ";\n");
+	fprintf(pretty_file, ";\n");
 }
 
 void pretty_print_read_stmt(STATEMENT *statement, int num_tabs){
 	print_num_tabs(num_tabs);
-	fprintf(output_pretty, "read %s;\n", statement->val.to_read.identifier);
+	fprintf(pretty_file, "read %s;\n", statement->val.to_read.identifier);
 }
 
 void pretty_print_assignment(STATEMENT *statement, int num_tabs){
 	print_num_tabs(num_tabs);
-	fprintf(output_pretty, "%s = ", statement->val.ASSIGNMENT.var_info.identifier);
+	fprintf(pretty_file, "%s = ", statement->val.ASSIGNMENT.var_info.identifier);
 	pretty_print_expression(statement->val.ASSIGNMENT.assign);
-	fprintf(output_pretty, ";\n");
+	fprintf(pretty_file, ";\n");
 }
 
 
@@ -169,10 +169,10 @@ void pretty_print_statements(STATEMENTS *statements, int num_tabs){
 void pretty_print(PROGRAM program){
 	pretty_print_declarations(program.declarations);
 	if (program.declarations != NULL){ 					// if there are declarations, print a new line between
-		fprintf(output_pretty, "\n"); 					// them and the statements
+		fprintf(pretty_file, "\n"); 					// them and the statements
 	}
 	pretty_print_statements(program.statements, 0);
-	fprintf(output_pretty, "\n");
+	fprintf(pretty_file, "\n");
 }
 
 
