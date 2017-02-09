@@ -1,5 +1,0 @@
-var x: float;
-var y: float;
-
-x = x+y;
-print x;
