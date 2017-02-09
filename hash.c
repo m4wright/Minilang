@@ -28,13 +28,7 @@ void add_to_hash(id_type_pair *pair){
 	int key = hash_function(pair->identifier);
 	HASH_TABLE[key] = add_to_list(pair, HASH_TABLE[key]);
 }
-void adds_to_hash(char *id, var_type t){
-	int key = hash_function(id);
-	id_type_pair *pair = malloc(sizeof(id_type_pair));
-	pair->identifier = id;
-	pair->type = t;
-	HASH_TABLE[key] = add_to_list(pair, HASH_TABLE[key]);
-}
+
 
 var_type get_type(char *identifier){
 	int key = hash_function(identifier);

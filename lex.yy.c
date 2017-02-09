@@ -925,14 +925,16 @@ case 24:
 YY_RULE_SETUP
 #line 55 "scanner.l"
 {
-	yylval.string = malloc(strlen(yytext) + 1);
+	yylval.string = malloc(strlen(yytext) - 1); 		// the token will not have the quote symbols
+	yytext[strlen(yytext)-1] = '\0';
+	yytext++;
 	sprintf(yylval.string, "%s", yytext);
 	return STRING;
 }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 61 "scanner.l"
+#line 63 "scanner.l"
 {
 	printf("INVALID: unexpected character: %c\n", yytext[0]);
 	exit(EXIT_FAILURE);	
@@ -940,10 +942,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 67 "scanner.l"
+#line 69 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 947 "lex.yy.c"
+#line 949 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1944,7 +1946,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 67 "scanner.l"
+#line 69 "scanner.l"
 
 
 

@@ -45,7 +45,6 @@ int hash_function(char *identifier);
 list *add_to_list(id_type_pair *element, list *l);
 void add_to_hash(id_type_pair *pair);
 
-void adds_to_hash(char *id, var_type t);
 
 var_type get_type(char *identifier);
 bool declared(char *identifier);

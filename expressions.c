@@ -1,15 +1,18 @@
 #include "tree.h"
+#include "code_generation.h"
+#include <string.h>
 #include <stdio.h>
+
 
 EXPR *makeEXPRvariable(char *var_name){
 	EXPR *e = malloc(sizeof(EXPR));
-	e->expression_type = get_type(var_name);
-	if (e->expression_type == error_type){ 							// var_name is not in the hash table. might want to remove this for 
-		printf("ERROR: %s has not been declared\n", var_name);    			// pretty printing
+	e->expression_type = variable_type;
+	e->type = get_type(var_name);
+	if (e->type == error_type){ 							// var_name is not in the hash table. might want to remove this for 
+		printf("ERROR: %s has not been declared\n", var_name);    	// pretty printing
 		exit(EXIT_FAILURE);
 		return NULL;
 	}
-	e->type = variable_type;
 	e->val.id = var_name;
 	return e;
 }
@@ -42,7 +45,7 @@ EXPR *makeEXPRstring(char *string){
 var_type get_type_from_op(var_type type1, var_type type2, exp_type op){
 	/*
 		returns error_type if it cannot be typed rather than throwing an error,
-		since we still want to be able to pretty print it
+		since we still want to be able to pretty print it.
 		error_type will tell the type checker that the types don't match
 	*/
 

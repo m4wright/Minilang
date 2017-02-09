@@ -14,7 +14,7 @@ void print_num_tabs(int num_tabs){
 	for (i = 0; i < num_tabs; i++){
 		s[i] = '\t';
 	}
-	s[i] = '\0';
+	s[num_tabs] = '\0';
 	fprintf(output_pretty, "%s", s);
 	free(s);
 }
@@ -47,37 +47,38 @@ void pretty_print_expression(EXPR *e){
 			fprintf(output_pretty, "%f", e->val.float_num);
 			break;
 		case string_literal:
-			fprintf(output_pretty, "%s", e->val.string);
+			fprintf(output_pretty, "\"%s\"", e->val.string);
 			break;
 		case uminus_type:
-			fprintf(output_pretty, "-");
+			fprintf(output_pretty, "(-");
 			pretty_print_expression(e->val.uminus.child);
+			fprintf(output_pretty, ")");
 			break;
 		case times_type:
 			fprintf(output_pretty, "(");
 			pretty_print_expression(e->val.times.left);
-			fprintf(output_pretty, "*");
+			fprintf(output_pretty, " * ");
 			pretty_print_expression(e->val.times.right);
 			fprintf(output_pretty, ")");
 			break;
 		case plus_type:
 			fprintf(output_pretty, "(");
 			pretty_print_expression(e->val.plus.left);
-			fprintf(output_pretty, "+");
+			fprintf(output_pretty, " + ");
 			pretty_print_expression(e->val.plus.right);
 			fprintf(output_pretty, ")");
 			break;
 		case div_type:
 			fprintf(output_pretty, "(");
 			pretty_print_expression(e->val.div.left);
-			fprintf(output_pretty, "/");
+			fprintf(output_pretty, " / ");
 			pretty_print_expression(e->val.div.right);
 			fprintf(output_pretty, ")");
 			break;
 		case minus_type:
 			fprintf(output_pretty, "(");
 			pretty_print_expression(e->val.minus.left);
-			fprintf(output_pretty, "-");
+			fprintf(output_pretty, " - ");
 			pretty_print_expression(e->val.minus.right);
 			fprintf(output_pretty, ")");
 			break;

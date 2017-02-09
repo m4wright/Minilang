@@ -10,18 +10,18 @@ print "Enter the exp: ";
 read exp;
 if exp then
 	ans = 1;
-	while (exp-1) do
-		is_odd = (exp-((exp/2)*2));
+	while (exp - 1) do
+		is_odd = (exp - ((exp / 2) * 2));
 		if is_odd then
-			ans = (base*ans);
-			base = (base*base);
-			exp = ((exp-1)/2);
+			ans = (base * ans);
+			base = (base * base);
+			exp = ((exp - 1) / 2);
 		else
-			base = (base*base);
-			exp = (exp/2);
+			base = (base * base);
+			exp = (exp / 2);
 		endif
 	done
-	ans = (ans*base);
+	ans = (ans * base);
 	print "The answer is: ";
 	print ans;
 else

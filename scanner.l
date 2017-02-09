@@ -53,7 +53,9 @@ endif 		{return tENDIF;}
 }
 
 \"(\\[abfnrtv"\\]|[^"\\])*\"	{
-	yylval.string = malloc(strlen(yytext) + 1);
+	yylval.string = malloc(strlen(yytext) - 1); 		// the token will not have the quote symbols
+	yytext[strlen(yytext)-1] = '\0';
+	yytext++;
 	sprintf(yylval.string, "%s", yytext);
 	return STRING;
 }
