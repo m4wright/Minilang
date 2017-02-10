@@ -1,10 +1,6 @@
-/*
-	NOTE: while building up the tree, types are not checked
-	Type checking occurs after
-*/
-
 #include <stdlib.h>
 #include "hash.h"
+
 #ifndef AST_H
 #define AST_H
 
@@ -35,7 +31,6 @@ typedef struct EXPR {
 typedef struct DECLARATIONS {
 	id_type_pair *decl;
 	struct DECLARATIONS *next;
-	struct DECLARATIONS *prev;
 } DECLARATIONS;
 
 struct STATEMENTS;
@@ -56,7 +51,6 @@ typedef struct STATEMENT {
 typedef struct STATEMENTS {
 	STATEMENT *statement;
 	struct STATEMENTS *next;
-	struct STATEMENTS *prev;
 } STATEMENTS;
 
 typedef struct PROGRAM {
@@ -85,7 +79,7 @@ STATEMENT *makeSTATEMENTread(char *id_to_read);
 STATEMENT *makeSTATEMENTassignment(char *id, EXPR *value);
 
 STATEMENTS *addToSTATEMENTS(STATEMENTS *statements, STATEMENT *statement);
-// might remove if I decide to pass this as an argument
+
 extern PROGRAM program;
 
 #endif

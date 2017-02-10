@@ -62,15 +62,18 @@ FILE *pretty_file;
 FILE *c_file;
 
 int main(int argc, char **argv){
-	if (argc > 1){
-		yyin = fopen(argv[1], "r");
-		if (yyin == NULL){
-			printf("File %s does not exist!\n", argv[1]);
-			exit(EXIT_FAILURE);
-		}
-		pretty_file = get_pretty_print_file(argv[1]);
-		c_file = get_c_file(argv[1]);
+	if (argc <= 1){
+		printf("Invalid use: run './minc filename'\n");
+		exit(EXIT_FAILURE);
 	}
+	yyin = fopen(argv[1], "r");
+	if (yyin == NULL){
+		printf("File %s does not exist!\n", argv[1]);
+		exit(EXIT_FAILURE);
+	}
+	pretty_file = get_pretty_print_file(argv[1]); 		
+	c_file = get_c_file(argv[1]);
+	
 	yyparse();
 	type_check(program);
 	

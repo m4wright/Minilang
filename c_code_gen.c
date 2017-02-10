@@ -119,6 +119,10 @@ void c_print_print_stmt(STATEMENT *statement, int num_tabs){
 
 void c_print_read_stmt(STATEMENT *statement, int num_tabs){
 	print_num_tabs(c_file, num_tabs);
+	if (statement->val.to_read.type == string_type){
+		fprintf(c_file, "%s = string_read(%s);\n", statement->val.to_read.identifier, statement->val.to_read.identifier);
+		return;
+	}
 	fprintf(c_file, "scanf(\"");
 	switch (statement->val.to_read.type){
 		case int_type:
@@ -126,9 +130,6 @@ void c_print_read_stmt(STATEMENT *statement, int num_tabs){
 			break;
 		case float_type:
 			fprintf(c_file, "%%f\", &");
-			break;
-		case string_type:
-			fprintf(c_file, "%%s\", ");
 			break;
 	}
 	fprintf(c_file, "%s);\n", statement->val.to_read.identifier);

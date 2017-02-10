@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define BUFFER 100
+#define BUFFER 1024
 
 char *string_mult(char *string, int multiplier){
 	int string_length = strlen(string);
@@ -17,6 +17,12 @@ char *string_add(char *string1, char *string2){
 	char *result = malloc(sizeof(string1) + sizeof(string2) + 1);
 	sprintf(result, "%s%s", string1, string2);
 	return result;
+}
+
+char *string_read(char *string){
+	string = malloc(BUFFER);
+	scanf("%s", string);
+	return string;
 }
 
 
