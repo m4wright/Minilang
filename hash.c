@@ -44,10 +44,8 @@ var_type get_type(char *identifier){
 	return error_type; 	
 }
 
-
 bool declared(char *identifier){
 	return get_type(identifier) != error_type;
 }
-
 
 

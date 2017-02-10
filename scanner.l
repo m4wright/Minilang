@@ -5,6 +5,9 @@
 
 extern int yylex();
 
+%option yylineno
+%option noyywrap
+
 %%
 
 \/\/.*						{}
@@ -61,15 +64,11 @@ endif 		{return tENDIF;}
 }
 
 . {
-	printf("INVALID: unexpected character: %c\n", yytext[0]);
+	printf("INVALID: unexpected character: %c on line %d\n", yytext[0], yylineno);
 	exit(EXIT_FAILURE);	
 }
 
 
 %%
 
-
-int yywrap(void){
-	return 1;
-}
 

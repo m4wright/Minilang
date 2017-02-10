@@ -4,18 +4,20 @@
 #include <string.h>
 #include "hash.h"
 #include "tree.h"
+#include "type_checker.h"
 
-	
+extern int yylineno;
 extern char *yytext;
+char *duplicate = NULL;
 int yylex();
 
 
 void yyerror(){
 	printf("INVALID: ");
 	if (strlen(yytext) == 0){
-		printf("syntax errror before EOF\n");
+		printf("syntax errror: unexpected end of file\n");
 	}else{
-		printf ("syntax error before %s\n", yytext);
+		printf ("syntax error before %s on line %d\n", yytext, yylineno);
 	}
 	exit(EXIT_FAILURE);
 }

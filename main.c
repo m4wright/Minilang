@@ -1,8 +1,9 @@
-#include "code_generation.h"
-#include "tree.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "code_generation.h"
+#include "tree.h"
+#include "type_checker.h"
 
 extern FILE *yyin;
 
@@ -58,6 +59,7 @@ FILE *get_c_file(char *filename){
 
 void yyparse();
 FILE *pretty_file;
+FILE *c_file;
 
 int main(int argc, char **argv){
 	if (argc > 1){
@@ -66,12 +68,18 @@ int main(int argc, char **argv){
 			printf("File %s does not exist!\n", argv[1]);
 			exit(EXIT_FAILURE);
 		}
-
 		pretty_file = get_pretty_print_file(argv[1]);
+		c_file = get_c_file(argv[1]);
 	}
 	yyparse();
+	type_check(program);
+	
 	pretty_print(program);
 	fclose(pretty_file);
+
+	c_print(program);
+	fclose(c_file);
+
 	exit(EXIT_SUCCESS);
 	return 0;
 }

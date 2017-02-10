@@ -3,23 +3,18 @@
 #include <stdlib.h>
 
 
-/*
-	NEED TO ADD INDENTATIONS
-	IDEA: PASS num_tabs parameter
-*/
 
-void print_num_tabs(int num_tabs){
+void print_num_tabs(FILE *file, int num_tabs){
 	char *s = malloc(num_tabs+1);
 	int i;
 	for (i = 0; i < num_tabs; i++){
 		s[i] = '\t';
 	}
 	s[num_tabs] = '\0';
-	fprintf(pretty_file, "%s", s);
+	fprintf(file, "%s", s);
 	free(s);
 }
 
-char *type_to_string(var_type type);
 
 void pretty_print_statements(STATEMENTS *statements, int num_tabs);
 
@@ -86,49 +81,49 @@ void pretty_print_expression(EXPR *e){
 }
 
 void pretty_print_while(STATEMENT *statement, int num_tabs){
-	print_num_tabs(num_tabs);
+	print_num_tabs(pretty_file, num_tabs);
 	fprintf(pretty_file, "while ");
 	pretty_print_expression(statement->val.WHILE.condition);
 	fprintf(pretty_file, " do\n");
 	pretty_print_statements(statement->val.WHILE.statements, num_tabs+1);
-	print_num_tabs(num_tabs);
+	print_num_tabs(pretty_file, num_tabs);
 	fprintf(pretty_file, "done\n");
 }
 
 
 void pretty_print_else(STATEMENTS *statements, int num_tabs){
 	if (statements != NULL){						// NULL means that there is no else part
-		print_num_tabs(num_tabs);
+		print_num_tabs(pretty_file, num_tabs);
 		fprintf(pretty_file, "else\n");
 		pretty_print_statements(statements, num_tabs+1);
 	}
 }
 
 void pretty_print_if(STATEMENT *statement, int num_tabs){
-	print_num_tabs(num_tabs);
+	print_num_tabs(pretty_file, num_tabs);
 	fprintf(pretty_file, "if ");
 	pretty_print_expression(statement->val.IF.condition);
 	fprintf(pretty_file, " then\n");
 	pretty_print_statements(statement->val.IF.statements, num_tabs+1);
 	pretty_print_else(statement->val.IF.else_stmts, num_tabs);
-	print_num_tabs(num_tabs);
+	print_num_tabs(pretty_file, num_tabs);
 	fprintf(pretty_file, "endif\n");
 }
 
 void pretty_print_print_stmt(STATEMENT *statement, int num_tabs){
-	print_num_tabs(num_tabs);
+	print_num_tabs(pretty_file, num_tabs);
 	fprintf(pretty_file, "print ");
 	pretty_print_expression(statement->val.PRINT.to_print);
 	fprintf(pretty_file, ";\n");
 }
 
 void pretty_print_read_stmt(STATEMENT *statement, int num_tabs){
-	print_num_tabs(num_tabs);
+	print_num_tabs(pretty_file, num_tabs);
 	fprintf(pretty_file, "read %s;\n", statement->val.to_read.identifier);
 }
 
 void pretty_print_assignment(STATEMENT *statement, int num_tabs){
-	print_num_tabs(num_tabs);
+	print_num_tabs(pretty_file, num_tabs);
 	fprintf(pretty_file, "%s = ", statement->val.ASSIGNMENT.var_info.identifier);
 	pretty_print_expression(statement->val.ASSIGNMENT.assign);
 	fprintf(pretty_file, ";\n");
