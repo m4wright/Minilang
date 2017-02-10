@@ -26,7 +26,7 @@ void c_print_declaration(id_type_pair *declaration){
 			fprintf(c_file, "0;\n");
 			break;
 		case string_type:
-			fprintf(c_file, "NULL;\n");
+			fprintf(c_file, "\"\";\n");
 			break;
 	}
 }
@@ -120,7 +120,7 @@ void c_print_print_stmt(STATEMENT *statement, int num_tabs){
 void c_print_read_stmt(STATEMENT *statement, int num_tabs){
 	print_num_tabs(c_file, num_tabs);
 	fprintf(c_file, "scanf(\"");
-	switch (statement->val.PRINT.to_print->type){
+	switch (statement->val.to_read.type){
 		case int_type:
 			fprintf(c_file, "%%d\", &");
 			break;
@@ -239,7 +239,7 @@ void c_print(PROGRAM program){
 		fprintf(c_file, "\n");
 	}
 	c_print_statements(program.statements, 1);
-	fprintf(c_file, "\treturn 0;\n}\n");
+	fprintf(c_file, "\n\tprintf(\"\\n\");\n\treturn 0;\n}\n");
 }
 
 
