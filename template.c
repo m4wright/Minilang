@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define BUFFER 100
 
 char *string_mult(char *string, int multiplier){
 	int string_length = strlen(string);
@@ -17,3 +18,5 @@ char *string_add(char *string1, char *string2){
 	sprintf(result, "%s%s", string1, string2);
 	return result;
 }
+
+

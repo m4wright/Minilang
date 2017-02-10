@@ -174,7 +174,7 @@ void c_print_expression(EXPR *e){
 					fprintf(c_file, ", ");
 					c_print_expression(e->val.times.left);
 				}
-				fprintf(c_file, ");\n");
+				fprintf(c_file, ")");
 				
 			}else{
 				// float or int multiplication
@@ -192,7 +192,7 @@ void c_print_expression(EXPR *e){
 				c_print_expression(e->val.plus.left);
 				fprintf(c_file, ", ");
 				c_print_expression(e->val.plus.right);
-				fprintf(c_file, ");\n");
+				fprintf(c_file, ")");
 			}else{
 				// float or int addition
 				fprintf(c_file, "(");
