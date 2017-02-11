@@ -32,8 +32,8 @@ FILE *get_pretty_print_file(char *filename){
 	}
 	remove_extension(filename);
 	int filename_length = strlen(filename);
-	char *pretty_filename = malloc(filename_length + 12); 	// +11 for '.pretty.min' +1 for null char
-	sprintf(pretty_filename, "%s.pretty.min", filename);
+	char *pretty_filename = malloc(filename_length + 14); 	// +11 for '.pretty.min' +2 for ./, +1 for null char
+	sprintf(pretty_filename, "./%s.pretty.min", filename);
 	FILE *pretty_file = fopen(pretty_filename, "w");
 	free(pretty_filename);
 	if (!pretty_file) {
@@ -46,8 +46,8 @@ FILE *get_pretty_print_file(char *filename){
 FILE *get_c_file(char *filename){
 	// this assumes that the filename is valid but with no extension
 	// (removed before during get_pretty_print_file
-	char *c_filename = malloc(strlen(filename)+3); 		// +2 for ".c", +1 for null char
-	sprintf(c_filename, "%s.c", filename);
+	char *c_filename = malloc(strlen(filename)+5); 		// +2 for ".c", +2 for ./, +1 for null char
+	sprintf(c_filename, "./%s.c", filename);
 	FILE *c_file = fopen(c_filename, "w");
 	free(c_filename);
 	if (!c_file){

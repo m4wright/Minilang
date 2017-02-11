@@ -25,4 +25,3 @@ char *string_read(char *string){
 	return string;
 }
 
-

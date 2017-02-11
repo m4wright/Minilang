@@ -221,26 +221,18 @@ void c_print_expression(EXPR *e){
 }
 
 
-
-
 void c_print(PROGRAM program){
-	FILE *template = fopen("template.c", "r");
-	if (!template){
-		printf("ERROR: could not read file template.c\n");
-		exit(EXIT_FAILURE);
-	}
-	char template_ch;
-	while ((template_ch = fgetc(template)) != EOF){
-		putc(template_ch, c_file);
-	}
-	fclose(template);
+	// this inserted code is copied from template.c
+	// the script template_gen.py generates this text from template.c
+	const char *template = "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#define BUFFER 1024\n\nchar *string_mult(char *string, int multiplier){\n\tint string_length = strlen(string);\n\tchar *result = malloc(string_length*multiplier + 1);\n\tint i;\n\tfor (i = 0; i < multiplier; i++){\n\t\tsprintf((result + i*string_length), \"%s\", string);\n\t}\n\treturn result;\n}\n\nchar *string_add(char *string1, char *string2){\n\tchar *result = malloc(sizeof(string1) + sizeof(string2) + 1);\n\tsprintf(result, \"%s%s\", string1, string2);\n\treturn result;\n}\n\nchar *string_read(char *string){\n\tstring = malloc(BUFFER);\n\tscanf(\"%s\", string);\n\treturn string;\n}\n\n";
+	fprintf(c_file, "%s", template);
 	fprintf(c_file, "\n\nint main(){\n");
 	c_print_declarations(program.declarations);
-	if (program.declarations != NULL){
+	if (program.declarations != NULL) {
 		fprintf(c_file, "\n");
 	}
 	c_print_statements(program.statements, 1);
-	fprintf(c_file, "\n\tprintf(\"\\n\");\n\treturn 0;\n}\n");
+	fprintf(c_file, "\n\treturn 0;\n}\n");
 }
 
 
