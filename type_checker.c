@@ -6,7 +6,7 @@ void type_check_statements(STATEMENTS *statements);
 
 void type_check(PROGRAM program){
 	if (duplicate != NULL){
-		printf("%s has already been declared\n", duplicate);
+		fprintf(stderr, "ERROR on line %d\n%s has already been declared\n", duplicate->line_number, duplicate->identifier);
 		exit(EXIT_FAILURE);
 	}
 	type_check_statements(program.statements);  		// duplicates are found while creating the AST
@@ -17,14 +17,16 @@ void type_check_statements(STATEMENTS *statements){
 		switch (statements->statement->statement_type){
 			case WHILE_STMT:
 				if (type_check_expression(statements->statement->val.WHILE.condition) != int_type){
-					printf("ERROR: expression in while loop does not have integer type\n");
+					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.WHILE.condition->line_number);
+					fprintf(stderr, "Expression in while loop does not have integer type\n");
 					exit(EXIT_FAILURE);
 				}
 				type_check_statements(statements->statement->val.WHILE.statements);
 				break;
 			case IF_STMT:
 				if (type_check_expression(statements->statement->val.IF.condition) != int_type){
-					printf("ERROR: expression in if statement does not have integer type\n");
+					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.IF.condition->line_number);
+					fprintf(stderr, "Expression in if statement does not have integer type\n");
 					exit(EXIT_FAILURE);
 				}
 				type_check_statements(statements->statement->val.IF.statements);
@@ -35,18 +37,21 @@ void type_check_statements(STATEMENTS *statements){
 				break;
 			case READ_STMT:
 				if (!declared(statements->statement->val.to_read.identifier)){
-					printf("ERROR: %s has not been declared\n", statements->statement->val.to_read.identifier);
+					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.to_read.line_number);
+					fprintf(stderr, "%s has not been declared\n", statements->statement->val.to_read.identifier);
 					exit(EXIT_FAILURE);
 				}
 				break;
 			case ASSIGNMENT_STMT:
 				if (!declared(statements->statement->val.ASSIGNMENT.var_info.identifier)){
-					printf("ERROR: %s has not been declared\n", statements->statement->val.ASSIGNMENT.var_info.identifier);
+					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.ASSIGNMENT.var_info.line_number);
+					fprintf(stderr, "%s has not been declared\n", statements->statement->val.ASSIGNMENT.var_info.identifier);
 					exit(EXIT_FAILURE);
 				}
 				type_check_expression(statements->statement->val.ASSIGNMENT.assign);
 				if (statements->statement->val.ASSIGNMENT.var_info.type == error_type){
-					printf("ERROR: %s has type %s but the expression has type %s", 
+					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.ASSIGNMENT.var_info.line_number);
+					fprintf(stderr, "%s has type %s but the expression has type %s", 
 						statements->statement->val.ASSIGNMENT.var_info.identifier, 
 						type_to_string(get_type(statements->statement->val.ASSIGNMENT.var_info.identifier)),
 						type_to_string(statements->statement->val.ASSIGNMENT.assign->type)
@@ -70,7 +75,8 @@ var_type type_check_expression(EXPR *e){
 		case uminus_type:
 			type_check_expression(e->val.uminus.child);
 			if (e->type == error_type){
-				printf("ERROR: unary minus cannot be applied to type %s\n", type_to_string(e->val.uminus.child->type));
+				fprintf(stderr, "ERROR on line %d\n", e->line_number);
+				fprintf(stderr, "unary minus cannot be applied to type %s\n", type_to_string(e->val.uminus.child->type));
 				exit(EXIT_FAILURE);
 			}
 			return e->type;
@@ -78,7 +84,8 @@ var_type type_check_expression(EXPR *e){
 			type_check_expression(e->val.times.left);
 			type_check_expression(e->val.times.right);
 			if (e->type == error_type){
-				printf("ERROR: '*' cannot be applied to types %s and %s\n", 
+				fprintf(stderr, "ERROR on line %d\n", e->line_number);
+				fprintf(stderr, "'*' cannot be applied to types %s and %s\n", 
 					type_to_string(e->val.times.left->type), type_to_string(e->val.times.right->type));
 				exit(EXIT_FAILURE);
 			}
@@ -87,7 +94,8 @@ var_type type_check_expression(EXPR *e){
 			type_check_expression(e->val.plus.left);
 			type_check_expression(e->val.plus.right);
 			if (e->type == error_type){
-				printf("ERROR: '+' cannot be applied to types %s and %s\n", 
+				fprintf(stderr, "ERROR on line %d\n", e->line_number);
+				fprintf(stderr, "'+' cannot be applied to types %s and %s\n", 
 					type_to_string(e->val.plus.left->type), type_to_string(e->val.plus.right->type));
 				exit(EXIT_FAILURE);
 			}
@@ -96,7 +104,8 @@ var_type type_check_expression(EXPR *e){
 			type_check_expression(e->val.div.left);
 			type_check_expression(e->val.div.right);
 			if (e->type == error_type){
-				printf("ERROR: '/' cannot be applied to types %s and %s\n", 
+				fprintf(stderr, "ERROR on line %d\n", e->line_number);
+				fprintf(stderr, "'/' cannot be applied to types %s and %s\n", 
 					type_to_string(e->val.div.left->type), type_to_string(e->val.div.right->type));
 				exit(EXIT_FAILURE);
 			}
@@ -105,7 +114,8 @@ var_type type_check_expression(EXPR *e){
 			type_check_expression(e->val.minus.left);
 			type_check_expression(e->val.minus.right);
 			if (e->type == error_type){
-				printf("ERROR: '-' cannot be applied to types %s and %s\n", 
+				fprintf(stderr, "ERROR on line %d\n", e->line_number);
+				fprintf(stderr, "'-' cannot be applied to types %s and %s\n", 
 					type_to_string(e->val.minus.left->type), type_to_string(e->val.minus.right->type));
 				exit(EXIT_FAILURE);
 			}

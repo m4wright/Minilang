@@ -6,7 +6,7 @@
 #ifndef TYPE_CHECK_H
 #define TYPE_CHECK_H
 
-extern char *duplicate;
+id_type_pair *duplicate;
 
 void type_check(PROGRAM program);
 

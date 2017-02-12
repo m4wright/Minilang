@@ -149,7 +149,7 @@ void pretty_print_statement(STATEMENT *statement, int num_tabs){
 			break;
 		default:
 			// this should never happen
-			printf("ERROR: Unkown statement type\n");
+			fprintf(stderr, "ERROR: Unkown statement type\n");
 			exit(EXIT_FAILURE);
 	}
 }
@@ -181,7 +181,7 @@ char *type_to_string(var_type type){
 			return "string";
 		default:
 			// this should never happen
-			printf("Invalid type\n");
+			fprintf(stderr, "Invalid type\n");
 			exit(EXIT_FAILURE);
 			return NULL;
 	}

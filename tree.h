@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "hash.h"
 
 #ifndef AST_H
@@ -13,7 +14,7 @@ typedef enum exp_type {
 typedef struct EXPR {
 	exp_type expression_type;
 	var_type type;
-
+	int line_number;
 	union {
 		char *id;
 		int int_num;
@@ -59,17 +60,17 @@ typedef struct PROGRAM {
 } PROGRAM;
 
 
-EXPR *makeEXPRvariable(char *var_name);
-EXPR *makeEXPRint(int value);
-EXPR *makeEXPRfloat(float value);
-EXPR *makeEXPRstring(char *string);
-EXPR *makeEXPRuminus(EXPR *child);
-EXPR *makeEXPRtimes(EXPR *left, EXPR *right);
-EXPR *makeEXPRdiv(EXPR *left, EXPR *right);
-EXPR *makeEXPRplus(EXPR *left, EXPR *right);
-EXPR *makeEXPRminus(EXPR *left, EXPR *right);
+EXPR *makeEXPRvariable(char *var_name, int line_number);
+EXPR *makeEXPRint(int value, int line_number);
+EXPR *makeEXPRfloat(float value, int line_number);
+EXPR *makeEXPRstring(char *string, int line_number);
+EXPR *makeEXPRuminus(EXPR *child, int line_number);
+EXPR *makeEXPRtimes(EXPR *left, EXPR *right, int line_number);
+EXPR *makeEXPRdiv(EXPR *left, EXPR *right, int line_number);
+EXPR *makeEXPRplus(EXPR *left, EXPR *right, int line_number);
+EXPR *makeEXPRminus(EXPR *left, EXPR *right, int line_number);
 
-id_type_pair *makeDECLARATION(char *identifier, var_type type);
+id_type_pair *makeDECLARATION(char *identifier, var_type type, int line_number);
 DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, id_type_pair *elem);
 
 STATEMENT *makeSTATEMENTwhile(EXPR *condition, STATEMENTS *statements);
@@ -81,5 +82,7 @@ STATEMENT *makeSTATEMENTassignment(char *id, EXPR *value);
 STATEMENTS *addToSTATEMENTS(STATEMENTS *statements, STATEMENT *statement);
 
 extern PROGRAM program;
+extern FILE *symbol_file;
+
 
 #endif

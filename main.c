@@ -25,19 +25,29 @@ void remove_extension(char *filename){
 	filename[strlen(filename)-4] = '\0';
 }
 
-FILE *get_pretty_print_file(char *filename){
+FILE *get_symbol_table_filename(char *filename){
 	if (!has_valid_extension(filename)){
-		printf("Invalid filename, expecting 'filename'.min, not %s\n", filename);
+		fprintf(stderr, "Invalid filename, expecting 'filename'.min, not %s\n", filename);
 		exit(EXIT_FAILURE);
 	}
 	remove_extension(filename);
-	int filename_length = strlen(filename);
-	char *pretty_filename = malloc(filename_length + 14); 	// +11 for '.pretty.min' +2 for ./, +1 for null char
-	sprintf(pretty_filename, "./%s.pretty.min", filename);
+	char *symbol_filename = malloc(strlen(filename) + 12); 			// +11 for ".symbol.txt", +1 for null char
+	sprintf(symbol_filename, "%s.symbol.txt", filename);
+	FILE *symbol_file = fopen(symbol_filename, "w");
+	free(symbol_filename);
+	if (!symbol_file){
+		fprintf(stderr, "Could not open the symbol table text file. Program is terminating\n");
+	}
+	return symbol_file;
+}
+
+FILE *get_pretty_print_file(char *filename){
+	char *pretty_filename = malloc(strlen(filename) + 12); 	// +11 for '.pretty.min', +1 for null char
+	sprintf(pretty_filename, "%s.pretty.min", filename);
 	FILE *pretty_file = fopen(pretty_filename, "w");
 	free(pretty_filename);
 	if (!pretty_file) {
-		printf("Could not open the file. Program is terminating\n");
+		fprintf(stderr, "Could not open the pretty print file. Program is terminating\n");
 		exit(EXIT_FAILURE);
 	}
 	return pretty_file;
@@ -46,40 +56,46 @@ FILE *get_pretty_print_file(char *filename){
 FILE *get_c_file(char *filename){
 	// this assumes that the filename is valid but with no extension
 	// (removed before during get_pretty_print_file
-	char *c_filename = malloc(strlen(filename)+5); 		// +2 for ".c", +2 for ./, +1 for null char
-	sprintf(c_filename, "./%s.c", filename);
+	char *c_filename = malloc(strlen(filename)+3); 		// +2 for ".c", +1 for null char
+	sprintf(c_filename, "%s.c", filename);
 	FILE *c_file = fopen(c_filename, "w");
 	free(c_filename);
 	if (!c_file){
-		printf("Could not open the file. Program is terminating\n");
+		fprintf(stderr, "Could not open the c file. Program is terminating\n");
 		exit(EXIT_FAILURE);
 	}
 	return c_file;
 }
 
+
+
 void yyparse();
 FILE *pretty_file;
+FILE *symbol_file;
 FILE *c_file;
 
 int main(int argc, char **argv){
 	if (argc <= 1){
-		printf("Invalid use: run './minc filename'\n");
+		fprintf(stderr, "Invalid use: run './minc filename'\n");
 		exit(EXIT_FAILURE);
 	}
 	yyin = fopen(argv[1], "r");
 	if (yyin == NULL){
-		printf("File %s does not exist!\n", argv[1]);
+		fprintf(stderr, "ERROR: file %s does not exist!\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	pretty_file = get_pretty_print_file(argv[1]); 		
-	c_file = get_c_file(argv[1]);
-	
+
+	symbol_file = get_symbol_table_filename(argv[1]);
+	fprintf(symbol_file, "IDENTIFIER: TYPE\n");
 	yyparse();
 	type_check(program);
-	
+	fclose(symbol_file);
+
+	pretty_file = get_pretty_print_file(argv[1]); 		
 	pretty_print(program);
 	fclose(pretty_file);
 
+	c_file = get_c_file(argv[1]);
 	c_print(program);
 	fclose(c_file);
 

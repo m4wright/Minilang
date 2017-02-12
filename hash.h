@@ -26,6 +26,7 @@ typedef enum var_type {
 typedef struct id_type_pair {
 	char *identifier;
 	var_type type;
+	int line_number;
 } id_type_pair;
 
 typedef struct list_elem {

@@ -22,8 +22,10 @@ void c_print_declaration(id_type_pair *declaration){
 	);
 	switch (declaration->type){
 		case int_type:
-		case float_type:
 			fprintf(c_file, "0;\n");
+			break;
+		case float_type:
+			fprintf(c_file, "0.0;\n");
 			break;
 		case string_type:
 			fprintf(c_file, "\"\";\n");
@@ -63,10 +65,6 @@ void c_print_statement(STATEMENT *statement, int num_tabs){
 		case ASSIGNMENT_STMT:
 			c_print_assignment(statement, num_tabs);
 			break;
-		default:
-			// this should never happen
-			printf("ERROR: Unkown statement type\n");
-			exit(EXIT_FAILURE);
 	}
 }
 
@@ -217,6 +215,10 @@ void c_print_expression(EXPR *e){
 			c_print_expression(e->val.minus.right);
 			fprintf(c_file, ")");
 			break;
+		default:
+			// this should never happen
+			fprintf(stderr, "ERROR: invalid expression\n");
+			exit(EXIT_FAILURE);
 	}
 }
 
@@ -246,7 +248,7 @@ char *type_to_c_string(var_type type){
 			return "char *";
 		default:
 			// this should never happen
-			printf("Invalid type\n");
+			fprintf(stderr, "Invalid type\n");
 			exit(EXIT_FAILURE);
 			return NULL;
 	}
