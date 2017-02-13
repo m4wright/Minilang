@@ -9,11 +9,11 @@ EXPR *makeEXPRvariable(char *var_name, int line_number){
 	e->expression_type = variable_type;
 	e->line_number = line_number;
 	e->type = get_type(var_name);
-	if (e->type == error_type){ 							
+	/*if (e->type == error_type){ 							
 		fprintf(stderr, "ERROR on line %d\n%s has not been declared\n", line_number, var_name);    	
 		exit(EXIT_FAILURE);
 		return NULL;
-	}
+	}*/
 	e->val.id = var_name;
 	return e;
 }
@@ -58,7 +58,7 @@ var_type get_type_from_op(var_type type1, var_type type2, exp_type op){
 	// in the case of uminus, type2 is irrelevant
 	switch (op){
 		case uminus_type:
-			if (type1 == float_type || type2 == int_type){
+			if (type1 == float_type || type1 == int_type){
 				return type1;
 			}else{
 				return error_type;

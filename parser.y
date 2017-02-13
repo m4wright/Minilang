@@ -18,10 +18,11 @@ void yyerror(const char *msg){
 }
 
 
-
 PROGRAM program = {NULL,NULL};
 
 %}
+
+%locations
 
 %union {
 	int integer;
@@ -110,7 +111,7 @@ IF  : tIF EXPR tTHEN STATEMENTS tENDIF 	 	{$$ = makeSTATEMENTif($2,$4,NULL); lin
 	;
 
 PRINT : tPRINT EXPR ';'		{$$ = makeSTATEMENTprint($2); line_number = @1.first_line;};
-READ : tREAD tID ';'		{$$ = makeSTATEMENTread($2); line_number = @1.first_line;};
+READ : tREAD tID ';'		{$$ = makeSTATEMENTread($2, @1.first_line); line_number = @1.first_line;};
 ASSIGNMENT : tID '=' EXPR ';' {$$ = makeSTATEMENTassignment($1,$3); line_number = @1.first_line;};
 
 EXPR : INTEGER 	 			{$$ = makeEXPRint($1, @1.first_line); line_number = @1.first_line;}
@@ -122,7 +123,7 @@ EXPR : INTEGER 	 			{$$ = makeEXPRint($1, @1.first_line); line_number = @1.first
 	 | EXPR MULT EXPR 		{$$ = makeEXPRtimes($1,$3, @1.first_line); line_number = @1.first_line;}
 	 | EXPR DIV EXPR 		{$$ = makeEXPRdiv($1,$3, @1.first_line); line_number = @1.first_line;}
 	 | '(' EXPR ')' 		{$$ = $2; line_number = @1.first_line;}
-	 | MINUS EXPR 	%prec UMINUS 		{$$ = makeEXPRuminus($2, @1.first_line); line_number = @2.first_line;}
+	 | MINUS EXPR 	%prec UMINUS 		{$$ = makeEXPRuminus($2, @1.first_line); line_number = @1.first_line;}
 	 ;
 %%
 

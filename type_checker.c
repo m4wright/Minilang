@@ -44,14 +44,14 @@ void type_check_statements(STATEMENTS *statements){
 				break;
 			case ASSIGNMENT_STMT:
 				if (!declared(statements->statement->val.ASSIGNMENT.var_info.identifier)){
-					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.ASSIGNMENT.var_info.line_number);
+					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.ASSIGNMENT.assign->line_number);
 					fprintf(stderr, "%s has not been declared\n", statements->statement->val.ASSIGNMENT.var_info.identifier);
 					exit(EXIT_FAILURE);
 				}
 				type_check_expression(statements->statement->val.ASSIGNMENT.assign);
 				if (statements->statement->val.ASSIGNMENT.var_info.type == error_type){
-					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.ASSIGNMENT.var_info.line_number);
-					fprintf(stderr, "%s has type %s but the expression has type %s", 
+					fprintf(stderr, "ERROR on line %d\n", statements->statement->val.ASSIGNMENT.assign->line_number);
+					fprintf(stderr, "%s has type %s but the expression has type %s\n", 
 						statements->statement->val.ASSIGNMENT.var_info.identifier, 
 						type_to_string(get_type(statements->statement->val.ASSIGNMENT.var_info.identifier)),
 						type_to_string(statements->statement->val.ASSIGNMENT.assign->type)
@@ -70,8 +70,13 @@ var_type type_check_expression(EXPR *e){
 		case int_literal:
 		case float_literal:
 		case string_literal:
-		case variable_type:
 			return e->type;
+		case variable_type:
+			if (e->type == error_type){ 							
+				fprintf(stderr, "ERROR on line %d\n%s has not been declared\n", e->line_number, e->val.id);    	
+				exit(EXIT_FAILURE);
+				return e->type;
+			}
 		case uminus_type:
 			type_check_expression(e->val.uminus.child);
 			if (e->type == error_type){

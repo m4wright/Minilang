@@ -88,12 +88,13 @@ int main(int argc, char **argv){
 	symbol_file = get_symbol_table_filename(argv[1]);
 	fprintf(symbol_file, "IDENTIFIER: TYPE\n");
 	yyparse();
-	type_check(program);
-	fclose(symbol_file);
 
 	pretty_file = get_pretty_print_file(argv[1]); 		
 	pretty_print(program);
 	fclose(pretty_file);
+
+	type_check(program);
+	fclose(symbol_file);
 
 	c_file = get_c_file(argv[1]);
 	c_print(program);

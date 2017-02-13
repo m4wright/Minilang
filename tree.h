@@ -76,7 +76,7 @@ DECLARATIONS *addToDECLARATIONS(DECLARATIONS *decls, id_type_pair *elem);
 STATEMENT *makeSTATEMENTwhile(EXPR *condition, STATEMENTS *statements);
 STATEMENT *makeSTATEMENTif(EXPR *condition, STATEMENTS *statements, STATEMENTS *else_stmts);
 STATEMENT *makeSTATEMENTprint(EXPR *to_print);
-STATEMENT *makeSTATEMENTread(char *id_to_read);
+STATEMENT *makeSTATEMENTread(char *id_to_read, int line_number);
 STATEMENT *makeSTATEMENTassignment(char *id, EXPR *value);
 
 STATEMENTS *addToSTATEMENTS(STATEMENTS *statements, STATEMENT *statement);

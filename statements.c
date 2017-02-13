@@ -29,11 +29,12 @@ STATEMENT *makeSTATEMENTprint(EXPR *to_print){
 	return statement;
 }
 
-STATEMENT *makeSTATEMENTread(char *id_to_read){
+STATEMENT *makeSTATEMENTread(char *id_to_read, int line_number){
 	STATEMENT *statement = malloc(sizeof(STATEMENT));
 	statement->statement_type = READ_STMT;
 	statement->val.to_read.identifier = id_to_read;
 	statement->val.to_read.type = get_type(id_to_read);
+	statement->val.to_read.line_number = line_number;
 	return statement;
 }
 
